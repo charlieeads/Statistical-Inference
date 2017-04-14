@@ -1,0 +1,105 @@
+---
+title: "Statistical Inference Course Project"
+author: "Charles Eads"
+date: "April 5, 2017"
+output:
+  word_document: default
+  pdf_document: default
+  html_document: default
+---
+
+## Part 1: Simulation Exercise Instructions
+
+1. Show the sample mean and compare it to the theoretical mean of the distribution.
+
+2. Show how variable the sample is (via variance) and compare it to the theoretical variance of the distribution.
+
+3. Show that the distribution is approximately normal.
+
+## Question 1
+
+```{r}
+
+#Set seed so we can reproduce
+set.seed(1000)
+
+#From question
+lambda <- 0.2 
+
+n <- 40 
+
+sim <- 1000 
+
+#Simulate some numbers
+simexp <- replicate(sim, rexp(n, lambda))
+
+#apply to get the mean
+meanexp <- apply(simexp, 2, mean)
+
+mean1 <- mean(meanexp)
+
+theoreticalmean <- 1/lambda
+
+#create a histogram and add in the mean1 and theoreticalmean
+hist(meanexp, ylab = "Mean Frequency", col="green", main="Exponential Mean Distribution")
+abline(v = mean1, col = "blue")
+abline(v = theoreticalmean, col = "red")
+```
+
+## Answer
+
+The mean and the theoretical mean are within a few decimals of each other so they are about the same.
+```{r}
+theoreticalmean
+```
+```{r}
+mean1
+```
+
+## Question 2
+
+```{r}
+
+sdmeanexp <- round(sd(meanexp), 4)
+
+sdmeanexp
+
+```
+
+```{r}
+sdtmean <- round((theoreticalmean)/sqrt(n), 4)
+
+sdtmean
+
+```
+```{r}
+actualvariance <- round(var(meanexp) ,4)
+
+actualvariance
+```
+
+```{r}
+theoreticalvariance <- (theoreticalmean)^2/n
+
+theoreticalvariance
+```
+
+## Answer
+
+So the SD is around .81 and the theoretical SD is around .8 and the actual variance is .625 and the theoretical variance is .65.
+
+## Question 3
+
+```{r}
+
+#Histogram of the meanexp 
+hist(meanexp, col = "blue", prob = TRUE, main = "Normal Distribution, CLT")
+#density line showing normal distribution
+lines(density(meanexp), col="black")
+
+
+```
+
+## Answer
+
+Because this is a large sample size with a finite level of variance, we can conclue that the mean of the simulations are approximately the mean due to the Central Limit Theorem
