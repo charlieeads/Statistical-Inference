@@ -1,0 +1,54 @@
+---
+title: "Statistical Inference Course Project Part 2"
+author: "Charles Eads"
+output: word_document
+---
+## Part 2: Basic Inferential Data Analysis
+1. Load the ToothGrowth data and perform some basic exploratory data analyses
+2. Provide a basic summary of the data.
+3. Use confidence intervals and/or hypothesis tests to compare tooth growth by supp and dose. (Only use the techniques from class, even if there's other approaches worth considering)
+4. State your conclusions and the assumptions needed for your conclusions.
+
+## Questions 1 and 2
+```{r}
+library(datasets)
+data("ToothGrowth")
+#getting a description of the data
+?ToothGrowth
+names(ToothGrowth)
+head(ToothGrowth)
+#Summary of the data
+summary(ToothGrowth)
+
+library(ggplot2)
+
+ggplot(aes(x = supp, y = len), data = ToothGrowth) + xlab("Supplement") + ylab("Tooth Length") + geom_boxplot(fill='#56B4E9', color="black") + ggtitle("Tooth Length vs. Supplement")
+```
+It appears the length of the Guinea Pigs teeth are longer for those given the OJ supplement.  
+#Dosage of Supplement Effects
+```{r}
+#Creating another plot for dosage
+ggplot(ToothGrowth, aes(x=dose, y=len, fill=dose, group = dose)) + geom_boxplot() + ggtitle("Supplement Dosage Effects")
+```
+
+## Question 3
+```{r}
+#t test for Supplements
+t.test(data = ToothGrowth, len ~ supp, paired = FALSE, var.equal = FALSE)
+```
+The p-value is very low at around 6% and the confidence interval has one that is -.17(close to 0).  We cannot reject the NULL hypothesis for supplements not effecting tooth length at this time.
+```{r}
+t.test(len ~ supp, paired = FALSE, var.equal = TRUE, data = subset(ToothGrowth, dose ==.5))
+```
+
+```{r}
+t.test(len ~ supp, paired = FALSE, var.equal = TRUE, data = subset(ToothGrowth, dose ==1))
+```
+The confidence intervals on the above 2 are 1.77 and 8.73 at .5mg/day and 2.84 and 9 at 1 mg/day so we can reject the NULL hypothesis.
+```{r}
+t.test(len ~ supp, paired = FALSE, var.equal = TRUE, data = subset(ToothGrowth, dose ==2))
+```
+The confidence interval here is -3.72 and 3.46 at 2.0mg/day so we can't reject the NULL hypothesis.
+
+## Question 4
+It appears that the more dosage you have of either supplement leads to more tooth growth based on the means of the groups above on the t-tests. It also appears that Orange Juice gives more tooth growth than Vitamin C at the .5mg/day and 1mg/day dosages. However, both Vitamin C and Orange Juice have the same amount of tooth growth for 2mg/day dosages.  This leads me to believe I can't conclude that Orange Juice is not a better way to increase tooth growth at higher dosages than Vitamin C, but is at lower dosages(below 2.0mg/day).
